@@ -49,20 +49,20 @@ sample payload:
 |`tsconfig-paths`|`^4.2.0`|
 |`tslint`|`^6.1.3`|
 |`typescript`|`^5.1.5`|
-|`xml2js`|`^0.6.`|
+|`xml2js`|`^0.6.0`|
 
 ## Dev Dependencies
 |Package|Version|
 |-|-|
-|`@types/content-disposition`|`^0.5.5|
-|`@types/express`|`^4.17.17|
-|`@types/jest`|`^29.5.2|
-|`@types/moxios`|`^0.4.15|
-|`@types/node`|`^20.3.2|
-|`@types/supertest`|`^2.0.12|
-|`@types/xml2js`|`^0.4.11|
-|`jest`|`^29.5.0|
-|`moxios`|`^0.4.0|
-|`supertest`|`^6.3.3|
-|`ts-jest`|`^29.1.|
+|`@types/content-disposition`|`^0.5.5`|
+|`@types/express`|`^4.17.17`|
+|`@types/jest`|`^29.5.2`|
+|`@types/moxios`|`^0.4.15`|
+|`@types/node`|`^20.3.2`|
+|`@types/supertest`|`^2.0.12`|
+|`@types/xml2js`|`^0.4.11`|
+|`jest`|`^29.5.0`|
+|`moxios`|`^0.4.0`|
+|`supertest`|`^6.3.3`|
+|`ts-jest`|`^29.1.0`|
 
