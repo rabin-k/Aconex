@@ -1,0 +1,128 @@
+<html>
+
+<head>
+  <title>Document Management</title>
+  <link rel="stylesheet" href="css/bootstrap.min.css" />
+</head>
+
+<body>
+  <div class="container">
+    <h1 class="text-center">Document Transfer</h1>
+    <div class="row">
+      <!-- column for source -->
+      <div class="col-md-6">
+        <h2 class="text-center">Source</h2>
+
+        <div class="row">
+          <div class="form-group">
+            <label for="source" class="control-label">Source Project</label>
+            <select name="source" id="source" class="form-control"></select>
+          </div>
+          <div class="form-group">
+            <label for="sdocument" class="control-label">Document</label>
+            <select name="sdocument" id="sdocument" class="form-control"></select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="sversion" class="control-label">Version</label>
+          <select name="sversion" id="sversion" class="form-control"></select>
+        </div>
+      </div>
+
+      <!-- column for destination -->
+      <div class="col-md-6">
+        <h2 class="text-center">Destination</h2>
+
+        <div class="row">
+          <div class="form-group">
+            <label for="destination" class="control-label">Destination Project</label>
+            <select name="destination" id="destination" class="form-control"></select>
+          </div>
+          <div class="form-group">
+            <label for="dDoctype" class="control-label">Document Type</label>
+            <select name="dDoctype" id="dDoctype" class="form-control"></select>
+          </div>
+          <div class="form-group">
+            <label for="dTitle" class="control-label">Title</label>
+            <input type="text" name="dTitle" id="dTitle" class="form-control"></select>
+          </div>
+          <div class="form-group">
+            <label for="dRev" class="control-label">Revision</label>
+            <input type="dRev" name="dRev" id="dRev" class="form-control"></select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row text-center">
+      <div class="col-md-1">
+        <button class="btn btn-lg btn-primary" id="moveBtn">Move</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/jquery.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script>
+    function populateDdlFromApi(selector, apiUrl, valueField, textField, store = false) {
+      $.get(apiUrl, function (data) {
+        if (store)
+          localStorage.setItem("documents", JSON.stringify(data));
+        populateDdl(selector, data, valueField, textField);
+      });
+    }
+
+    function populateDdl(selector, data, valueField, textField) {
+      var dropdownOptions = $(selector);
+      dropdownOptions.empty(); // Clear existing options
+
+      dropdownOptions.append($("<option>").text("--Select--"));
+      $.each(data, function (index, item) {
+        var option = $("<option>");
+        option.val(item[valueField]);
+        option.text(item[textField]);
+        dropdownOptions.append(option);
+      });
+    }
+
+    $(document).ready(function () {
+      populateDdlFromApi("#source", "/project/list", "ProjectId", "ProjectName");
+      populateDdlFromApi("#destination", "/project/list", "ProjectId", "ProjectName");
+
+      $("#source").on("change", function (e) {
+        const projectId = $("#source option:selected").val();
+        populateDdlFromApi("#sdocument", `document/list/${projectId}`, "documentNumber", "title", true);
+      });
+
+      $("#sdocument").on("change", function (e) {
+        const documentNum = $("#sdocument option:selected").val();
+        const docs = JSON.parse(localStorage.getItem("documents"));
+        const currentDoc = docs.find(x => x.documentNumber == documentNum)
+        populateDdl("#sversion", currentDoc.versions, "documentId", "version");
+      });
+
+      $("#destination").on("change", function (e) {
+        const projectId = $("#destination option:selected").val();
+        populateDdlFromApi("#dDoctype", `/project/doctype/${projectId}`, "Id", "Value");
+      });
+
+      $("#moveBtn").on("click", function (e) {
+        const sourceId = $("#source option:selected").val();
+        const destinationId = $("#destination option:selected").val();
+
+        const url = `/document/move/${sourceId}/${destinationId}`;
+        const postData = {
+          documentId: $("#sversion").val(),
+          docTypeId: $("#dDoctype").val(),
+          title: $("#dTitle").val(),
+          revision: $("#dRev").val()
+        };
+
+        $.post(url, postData, function (res) {
+          alert(`Document moved. New document id=${res.data.data.RegisterDocument}`)
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>
